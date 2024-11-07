@@ -1,0 +1,116 @@
+/* Основные стили */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#car-selection, #model-selection {
+    text-align: center;
+    max-width: 90vw;
+    width: 100%;
+}
+
+.car-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.car-item {
+    flex: 0 1 30%;
+    max-width: 150px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border 0.3s ease;
+    cursor: pointer;
+}
+
+.car-item img {
+    width: 100%;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.car-item:hover img, .car-item.selected img {
+    opacity: 1;
+}
+
+.car-item.selected {
+    background-color: #f0f0f0;
+    border: 2px solid blue;
+    padding: 8px;
+}
+
+.car-item span {
+    display: block;
+    margin-top: 8px;
+}
+
+/* Стили кнопок */
+#choose-car, #next {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #333 !important; /* Основной цвет кнопки */
+    color: white !important;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Эффект при наведении и нажатии на кнопки */
+#choose-car:hover, #next:hover {
+    background-color: blue !important; /* Синий цвет при наведении */
+    transform: scale(1.1); /* Легкое увеличение */
+}
+
+#choose-car:active, #next:active {
+    background-color: darkblue !important; /* Темно-синий цвет при нажатии */
+    transform: scale(1.05); /* Небольшое уменьшение при нажатии */
+}
+
+/* Стили для списка моделей */
+.model-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    padding: 5px;
+}
+
+.model-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.model-item:hover {
+    background-color: #f0f0f0;
+}
+
+
+/* Адаптивный стиль */
+@media (max-width: 600px) {
+    .car-item {
+        flex: 0 1 40%;
+    }
+}
