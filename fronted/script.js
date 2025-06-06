@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Загружаем список марок с сервера
 function loadBrands() {
-    fetch("http://127.0.0.1:5000/brands")
+    fetch("https://flyaks.pythonanywhere.com/brands")
         .then(response => response.json())
         .then(data => {
             const carGrid = document.querySelector(".car-grid");
@@ -41,7 +41,7 @@ function showModelSelection() {
 }
 
 function fetchModels(car) {
-    fetch(`http://127.0.0.1:5000/models/${encodeURIComponent(car)}`)
+    fetch(`https://flyaks.pythonanywhere.com/models/${encodeURIComponent(car)}`)
         .then(response => response.json())
         .then(data => {
             models = data;
@@ -88,7 +88,7 @@ function proceedToNext() {
 }
 
 function loadServices(brand, model) {
-    fetch(`http://127.0.0.1:5000/services/${encodeURIComponent(brand)}/${encodeURIComponent(model)}`)
+    fetch(`https://flyaks.pythonanywhere.com/services/${encodeURIComponent(brand)}/${encodeURIComponent(model)}`)
         .then(response => response.json())
         .then(data => {
             showServices(data);
@@ -151,3 +151,4 @@ function submitOrder() {
         alert("Вы выбрали:\n" + selected.join(", "));
     }
 }
+
