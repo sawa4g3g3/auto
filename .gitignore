@@ -1,0 +1,17 @@
+# Базы данных
+*.db *.sqlite
+# Папки с кэшем
+__pycache__/ *.pyc
+# Логи и временные файлы
+*.log *.tmp
+# Flask окружение
+.env
+# IDE и системные файлы
+.vscode/ *.swp .DS_Store
+# Файлы Termux Editor
+*.bak
+# Node/React stuff (если вдруг есть)
+node_modules/
+dist/
+
+
