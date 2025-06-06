@@ -1,7 +1,10 @@
 from flask import Flask, jsonify
-import sqlite3
 
+from flask_cors import CORS
+import sqlite3
 app = Flask(__name__)
+
+CORS(app)
 
 def get_db_connection():
     conn = sqlite3.connect('/home/flyaks/auto/backend/cars.db')
