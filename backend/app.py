@@ -25,5 +25,3 @@ def models(brand):
     conn.close()
     return jsonify([dict(r) for r in rows])
 
-if __name__ == '__main__':
-    app.run(debug=True)
