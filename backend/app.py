@@ -28,3 +28,13 @@ def models(brand):
     conn.close()
     return jsonify([dict(r) for r in rows])
 
+@app.route('/services/<brand>/<model>')
+def services(brand, model):
+    conn = get_db_connection()
+    rows = conn.execute('''
+        SELECT service, price
+        FROM services
+        WHERE brand = ? AND model = ?
+    ''', (brand, model)).fetchall()
+    conn.close()
+    return jsonify([dict(r) for r in rows])
