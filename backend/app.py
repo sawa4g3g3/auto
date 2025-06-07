@@ -4,7 +4,7 @@ from flask_cors import CORS
 import sqlite3
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "https://sawa4g3g3.github.io"}})
+CORS(app)
 
 def get_db_connection():
     conn = sqlite3.connect('/home/flyaks/auto/backend/cars.db')
