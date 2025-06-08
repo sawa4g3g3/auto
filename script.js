@@ -1,10 +1,8 @@
 let selectedCar = null;
 let models = [];
 
-const testDiv = document.createElement('div');
-testDiv.textContent = 'JS успешно подключен!';
-testDiv.style.cssText = 'color: green; font-size: 24px; text-align: center; padding: 20px; border: 2px solid green; margin: 10px;';
-document.body.prepend(testDiv);
+document.getElementById('js-status').style.display = 'block';
+document.getElementById('js-status').textContent = 'JavaScript успешно подключен!';
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM loaded");  // Проверяем, что событие срабатывает
