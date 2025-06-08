@@ -2,6 +2,7 @@ let selectedCar = null;
 let models = [];
 
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM loaded");  // Проверяем, что событие срабатывает
     loadBrands();
 });
 
