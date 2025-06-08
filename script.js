@@ -2,8 +2,6 @@ let selectedCar = null;
 let models = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById('js-status').style.display = 'block';
-    document.getElementById('js-status').textContent = 'JavaScript успешно подключен!';
     console.log("DOM loaded");  // Проверяем, что событие срабатывает
     loadBrands();
 });
