@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Загружаем список марок с сервера
 function loadBrands() {
-    fetch("https://flyaks.pythonanywhere.com/brands")
+    fetch("https://cosaric.suprisemake.workers.dev/api/brands")
         .then(response => response.json())
         .then(data => {
             const carGrid = document.querySelector(".car-grid");
@@ -42,7 +42,7 @@ function showModelSelection() {
 }
 
 function fetchModels(car) {
-    fetch(`https://flyaks.pythonanywhere.com/models/${encodeURIComponent(car)}`)
+    fetch(`https://cosaric.suprisemake.workers.dev/api/models/${encodeURIComponent(car)}`)
         .then(response => response.json())
         .then(data => {
             models = data;
@@ -89,7 +89,7 @@ function proceedToNext() {
 }
 
 function loadServices(brand, model) {
-    fetch(`https://flyaks.pythonanywhere.com/services/${encodeURIComponent(brand)}/${encodeURIComponent(model)}`)
+    fetch(`https://cosaric.suprisemake.workers.dev/api/services/${encodeURIComponent(brand)}/${encodeURIComponent(model)}`)
         .then(response => response.json())
         .then(data => {
             showServices(data);
