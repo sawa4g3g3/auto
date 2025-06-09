@@ -1,155 +1,158 @@
-let selectedCar = null;
-let models = [];
-
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM loaded");  // Проверяем, что событие срабатывает
-    loadBrands();
-});
-
-// Загружаем список марок с сервера
-function loadBrands() {
-    fetch("https://cosaric.suprisemake.workers.dev/api/brands")
-        .then(response => response.json())
-        .then(data => {
-            const carGrid = document.querySelector(".car-grid");
-            carGrid.innerHTML = "";
-            data.forEach(brand => {
-                const div = document.createElement("div");
-                div.className = "car-item";
-                div.innerHTML = `<img src="${brand.name.toLowerCase()}-logo.png" alt="${brand.name}"><span>${brand.name}</span>`;
-                div.onclick = () => selectCar(brand.name);
-                carGrid.appendChild(div);
-            });
-        });
+/* Основные стили */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-function selectCar(car) {
-    document.querySelectorAll(".car-item").forEach(item => item.classList.remove("selected"));
-    const selectedCarElement = Array.from(document.querySelectorAll(".car-item")).find(item =>
-        item.textContent.trim() === car
-    );
-    if (selectedCarElement) selectedCarElement.classList.add("selected");
-
-    selectedCar = car;
-    document.getElementById("choose-car").style.display = "inline-block";
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5;
 }
 
-function showModelSelection() {
-    if (!selectedCar) return;
-    document.getElementById("car-selection").style.display = "none";
-    document.getElementById("model-selection").style.display = "block";
-    fetchModels(selectedCar);
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
 }
 
-function fetchModels(car) {
-    fetch(`https://cosaric.suprisemake.workers.dev/api/models/${encodeURIComponent(car)}`)
-        .then(response => response.json())
-        .then(data => {
-            models = data;
-            updateModelList();
-        });
+#car-selection, #model-selection, #result-section {
+    text-align: center;
+    max-width: 90vw;
+    width: 100%;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-function updateModelList() {
-    const modelList = document.getElementById("model-list");
-    modelList.innerHTML = "";
-    models.forEach(item => {
-        const modelItem = document.createElement("div");
-        modelItem.className = "model-item";
-        modelItem.textContent = `${item.name} (${item.year})`;
-        modelItem.onclick = () => selectModel(item);
-        modelList.appendChild(modelItem);
-    });
+.car-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-function filterModels() {
-    const searchTerm = document.getElementById("model-search").value.toLowerCase();
-    const modelList = document.getElementById("model-list");
-    modelList.innerHTML = "";
-    models.forEach(item => {
-        if (item.name.toLowerCase().includes(searchTerm) || item.year.includes(searchTerm)) {
-            const modelItem = document.createElement("div");
-            modelItem.className = "model-item";
-            modelItem.textContent = `${item.name} (${item.year})`;
-            modelItem.onclick = () => selectModel(item);
-            modelList.appendChild(modelItem);
-        }
-    });
+.car-item {
+    flex: 0 1 30%;
+    max-width: 150px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #ddd;
 }
 
-function selectModel(item) {
-    document.getElementById("model-search").value = item.name;
-    document.getElementById("next").style.display = "inline-block";
+.car-item img {
+    width: 100%;
+    opacity: 0.8;
+    transition: opacity 0.3s;
 }
 
-function proceedToNext() {
-    const modelName = document.getElementById("model-search").value;
-    if (!selectedCar || !modelName) return;
-    loadServices(selectedCar, modelName);
+.car-item:hover img, .car-item.selected img {
+    opacity: 1;
 }
 
-function loadServices(brand, model) {
-    fetch(`https://cosaric.suprisemake.workers.dev/api/services/${encodeURIComponent(brand)}/${encodeURIComponent(model)}`)
-        .then(response => response.json())
-        .then(data => {
-            showServices(data);
-        });
+.car-item.selected {
+    background-color: #f0f0f0;
+    border: 2px solid blue;
+    padding: 8px;
 }
 
-function showServices(services) {
-    document.getElementById("model-selection").style.display = "none";
-    document.getElementById("service-section").style.display = "block";
-
-    const tableBody = document.querySelector("#service-list tbody");
-    tableBody.innerHTML = "";
-
-    services.forEach((service, index) => {
-        const row = document.createElement("tr");
-
-        const checkboxCell = document.createElement("td");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.dataset.price = service.price;
-        checkbox.onchange = updateTotal;
-        checkboxCell.appendChild(checkbox);
-
-        const nameCell = document.createElement("td");
-        nameCell.textContent = service.service;
-
-        const priceCell = document.createElement("td");
-        priceCell.textContent = `${service.price} ₸`;
-        priceCell.style.textAlign = "right";
-
-        row.appendChild(checkboxCell);
-        row.appendChild(nameCell);
-        row.appendChild(priceCell);
-        tableBody.appendChild(row);
-    });
-
-    updateTotal();
+.car-item span {
+    display: block;
+    margin-top: 8px;
+    font-weight: bold;
 }
 
-function updateTotal() {
-    const checkboxes = document.querySelectorAll("#service-list input[type='checkbox']");
-    let total = 0;
-    checkboxes.forEach(cb => {
-        if (cb.checked) total += parseInt(cb.dataset.price);
-    });
-    document.getElementById("total").textContent = `Итого: ${total} ₸`;
+/* Стили кнопок */
+#choose-car, #next, .btn-primary {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
-function submitOrder() {
-    const selected = [];
-    const checkboxes = document.querySelectorAll("#service-list input[type='checkbox']");
-    const names = document.querySelectorAll("#service-list td:nth-child(2)");
-    checkboxes.forEach((cb, i) => {
-        if (cb.checked) selected.push(names[i].textContent);
-    });
+/* Эффект при наведении и нажатии на кнопки */
+#choose-car:hover, #next:hover, .btn-primary:hover {
+    background-color: blue;
+    transform: scale(1.1);
+}
 
-    if (selected.length === 0) {
-        alert("Вы не выбрали ни одной услуги.");
-    } else {
-        alert("Вы выбрали:\n" + selected.join(", "));
+#choose-car:active, #next:active, .btn-primary:active {
+    background-color: darkblue;
+    transform: scale(1.05);
+}
+
+/* Стили для списка моделей */
+.model-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.model-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-bottom: 1px solid #eee;
+}
+
+.model-item:last-child {
+    border-bottom: none;
+}
+
+.model-item:hover {
+    background-color: #f0f0f0;
+}
+
+#model-search {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Стили для раздела результата */
+#result-section h2 {
+    color: #2c3e50;
+}
+
+#selected-car-info {
+    font-size: 20px;
+    color: #27ae60;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border-left: 4px solid #27ae60;
+}
+
+/* Адаптивный стиль */
+@media (max-width: 600px) {
+    .car-item {
+        flex: 0 1 40%;
+    }
+    
+    body {
+        padding: 10px;
     }
 }
-
