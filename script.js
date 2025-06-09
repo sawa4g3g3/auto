@@ -1,158 +1,121 @@
-/* Основные стили */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+let selectedCar = null;
+let models = [];
+let selectedModel = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM loaded");
+    loadBrands();
+});
+
+// Загружаем список марок с сервера
+function loadBrands() {
+    fetch("https://cosaric.suprisemake.workers.dev/api/brands")
+        .then(response => response.json())
+        .then(data => {
+            const carGrid = document.querySelector(".car-grid");
+            carGrid.innerHTML = "";
+            data.forEach(brand => {
+                const div = document.createElement("div");
+                div.className = "car-item";
+                div.innerHTML = `<img src="${brand.name.toLowerCase()}-logo.png" alt="${brand.name}"><span>${brand.name}</span>`;
+                div.onclick = () => selectCar(brand.name);
+                carGrid.appendChild(div);
+            });
+        });
 }
 
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f5f5f5;
+function selectCar(car) {
+    document.querySelectorAll(".car-item").forEach(item => item.classList.remove("selected"));
+    const selectedCarElement = Array.from(document.querySelectorAll(".car-item")).find(item =>
+        item.textContent.trim() === car
+    );
+    if (selectedCarElement) selectedCarElement.classList.add("selected");
+
+    selectedCar = car;
+    document.getElementById("choose-car").style.display = "inline-block";
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
+function showModelSelection() {
+    if (!selectedCar) return;
+    document.getElementById("car-selection").style.display = "none";
+    document.getElementById("model-selection").style.display = "block";
+    fetchModels(selectedCar);
 }
 
-#car-selection, #model-selection, #result-section {
-    text-align: center;
-    max-width: 90vw;
-    width: 100%;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+function fetchModels(car) {
+    fetch(`https://cosaric.suprisemake.workers.dev/api/models/${encodeURIComponent(car)}`)
+        .then(response => response.json())
+        .then(data => {
+            models = data;
+            updateModelList();
+        });
 }
 
-.car-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 20px;
+function updateModelList() {
+    const modelList = document.getElementById("model-list");
+    modelList.innerHTML = "";
+    models.forEach(item => {
+        const modelItem = document.createElement("div");
+        modelItem.className = "model-item";
+        modelItem.textContent = `${item.name} (${item.year})`;
+        modelItem.onclick = () => selectModel(item);
+        modelList.appendChild(modelItem);
+    });
 }
 
-.car-item {
-    flex: 0 1 30%;
-    max-width: 150px;
-    padding: 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, border 0.3s ease;
-    cursor: pointer;
-    border: 1px solid #ddd;
+function filterModels() {
+    const searchTerm = document.getElementById("model-search").value.toLowerCase();
+    const modelList = document.getElementById("model-list");
+    modelList.innerHTML = "";
+    models.forEach(item => {
+        if (item.name.toLowerCase().includes(searchTerm) || item.year.includes(searchTerm)) {
+            const modelItem = document.createElement("div");
+            modelItem.className = "model-item";
+            modelItem.textContent = `${item.name} (${item.year})`;
+            modelItem.onclick = () => selectModel(item);
+            modelList.appendChild(modelItem);
+        }
+    });
 }
 
-.car-item img {
-    width: 100%;
-    opacity: 0.8;
-    transition: opacity 0.3s;
+function selectModel(item) {
+    selectedModel = item; // Сохраняем весь объект
+    document.getElementById("model-search").value = `${item.name} (${item.year})`;
+    document.getElementById("next").style.display = "inline-block";
 }
 
-.car-item:hover img, .car-item.selected img {
-    opacity: 1;
-}
-
-.car-item.selected {
-    background-color: #f0f0f0;
-    border: 2px solid blue;
-    padding: 8px;
-}
-
-.car-item span {
-    display: block;
-    margin-top: 8px;
-    font-weight: bold;
-}
-
-/* Стили кнопок */
-#choose-car, #next, .btn-primary {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-/* Эффект при наведении и нажатии на кнопки */
-#choose-car:hover, #next:hover, .btn-primary:hover {
-    background-color: blue;
-    transform: scale(1.1);
-}
-
-#choose-car:active, #next:active, .btn-primary:active {
-    background-color: darkblue;
-    transform: scale(1.05);
-}
-
-/* Стили для списка моделей */
-.model-list {
-    max-height: 200px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    margin-top: 10px;
-    padding: 5px;
-    border-radius: 5px;
-}
-
-.model-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    border-bottom: 1px solid #eee;
-}
-
-.model-item:last-child {
-    border-bottom: none;
-}
-
-.model-item:hover {
-    background-color: #f0f0f0;
-}
-
-#model-search {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-/* Стили для раздела результата */
-#result-section h2 {
-    color: #2c3e50;
-}
-
-#selected-car-info {
-    font-size: 20px;
-    color: #27ae60;
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 5px;
-    border-left: 4px solid #27ae60;
-}
-
-/* Адаптивный стиль */
-@media (max-width: 600px) {
-    .car-item {
-        flex: 0 1 40%;
+function showSelectionResult() {
+    if (!selectedCar || !selectedModel) {
+        alert("Пожалуйста, выберите модель");
+        return;
     }
     
-    body {
-        padding: 10px;
-    }
+    // Скрываем текущий раздел
+    document.getElementById("model-selection").style.display = "none";
+    
+    // Показываем результат
+    const resultSection = document.getElementById("result-section");
+    resultSection.style.display = "block";
+    
+    // Отображаем выбранный автомобиль
+    document.getElementById("selected-car-info").textContent = 
+        `Вы выбрали: ${selectedCar} ${selectedModel.name} (${selectedModel.year})`;
 }
+
+function resetSelection() {
+    // Сбрасываем выбор
+    selectedCar = null;
+    selectedModel = null;
+    models = [];
+    
+    // Очищаем поля
+    document.getElementById("model-search").value = "";
+    
+    // Показываем начальный экран
+    document.getElementById("result-section").style.display = "none";
+    document.getElementById("car-selection").style.display = "block";
+    
+    // Сбрасываем выделение брендов
+    document.querySelectorAll(".car-item").forEach(item => item.classList.remove("selected"));
+    document.getElementById("choose-car").style.display = "none";
+        }
