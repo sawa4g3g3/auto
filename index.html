@@ -21,31 +21,15 @@
         <div id="model-list" class="model-list">
             <!-- Модели загружаются из Flask API -->
         </div>
-        <button id="next" onclick="proceedToNext()" style="display: none;">Далее</button>
+        <button id="next" onclick="showSelectionResult()" style="display: none;">Завершить</button>
     </div>
-    
-    <div id="service-section" style="display: none;">
-        <h2>Доступные услуги</h2>
-        <table id="service-list" class="service-table">
-            <thead>
-                <tr>
-                    <th>✓</th>
-                    <th>Услуга</th>
-                    <th>Цена</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Услуги добавляются здесь -->
-            </tbody>
-        </table>
-        <div id="total" class="total-cost">Итого: 0 ₸</div>
-        <div class="button-wrapper">
-          <button onclick="submitOrder()" class="btn-primary">Оформить</button>
-        </div>    
+
+    <div id="result-section" style="display: none; text-align: center; padding: 20px;">
+        <h2>Выбор завершен!</h2>
+        <p id="selected-car-info" style="font-size: 18px; margin: 20px 0;"></p>
+        <button onclick="resetSelection()" class="btn-primary">Выбрать другой автомобиль</button>
     </div>
 
     <script src="./script.js"></script>
 </body>
 </html>
-
-
