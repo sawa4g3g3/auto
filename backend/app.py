@@ -1,9 +1,8 @@
 from flask import Flask, jsonify
-
 from flask_cors import CORS
 import sqlite3
-app = Flask(__name__)
 
+app = Flask(__name__)
 CORS(app, origins=["https://sawa4g3g3.github.io"])
 
 def get_db_connection():
@@ -25,16 +24,5 @@ def models(brand):
     if not brand_row:
         return jsonify({'error': 'Brand not found'}), 404
     rows = conn.execute('SELECT name, year FROM models WHERE brand_id = ?', (brand_row['id'],)).fetchall()
-    conn.close()
-    return jsonify([dict(r) for r in rows])
-
-@app.route('/services/<brand>/<model>')
-def services(brand, model):
-    conn = get_db_connection()
-    rows = conn.execute('''
-        SELECT service, price
-        FROM services
-        WHERE brand = ? AND model = ?
-    ''', (brand, model)).fetchall()
     conn.close()
     return jsonify([dict(r) for r in rows])
