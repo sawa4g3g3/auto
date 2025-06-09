@@ -118,4 +118,4 @@ function resetSelection() {
     // Сбрасываем выделение брендов
     document.querySelectorAll(".car-item").forEach(item => item.classList.remove("selected"));
     document.getElementById("choose-car").style.display = "none";
-        }
+}
